@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onErrorResponse: " + "That didn't work!");
+                Log.d(TAG, "onErrorResponse: " + "That didn't work! Sorry");
             }
         });
 
