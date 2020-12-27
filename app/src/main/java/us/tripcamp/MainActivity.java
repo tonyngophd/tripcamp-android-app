@@ -9,6 +9,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,21 +34,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private AppBarConfiguration mAppBarConfiguration;
     private String TAG;
+    private View fragmentGoogleMaps;
+    private static SupportMapFragment mapFragment;
+    private static View mapView;
+    public static GoogleMap mMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +71,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-//        new fetchData().execute();
-        Log.d(TAG, "onCreate: runing testFetch()");
-//        testFetch();
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.fragmentGoogleMaps);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.map_container, mapFragment)
+                .commit();
+        mapFragment.getMapAsync(MainActivity.this);
     }
 
     @Override
@@ -91,89 +95,18 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public class fetchData extends AsyncTask<Void, Void, String> {
-
-        private static final String TAG = "mainactivity";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            // Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
-
-            try {
-
-                URL url = new URL("http://localhost:5000");
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-                int lengthOfFile = urlConnection.getContentLength();
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                Log.d(TAG, "doInBackground: inputStream" + inputStream.toString());
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-                forecastJsonStr = buffer.toString();
-                Log.e("Json1", forecastJsonStr);
-
-                JSONArray jsonArray = new JSONArray(forecastJsonStr);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    Log.d(TAG, "doInBackground: " + jsonObject);
-//                    ContactModel contactModel = new ContactModel();
-//                    contactModel.setID(jsonObject.getString("id"));
-//                    contactModel.setName(jsonObject.getString("name"));
-//                    contactModel.setPhone(jsonObject.getString("mobile"));
-//                    contactModel.setImageURL(jsonObject.getString("profile_imge"));
-//                    contactModels.add(contactModel);
-                }
-
-                return forecastJsonStr;
-            } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
-                    }
-                }
-            }
-            return forecastJsonStr;
-        }
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-//            adapter.notifyDataSetChanged();
-        }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "onMapReady: Map READY");
+        mMap = googleMap;
+//        mapView = getSupportFragmentManager().findFragmentById(R.id.fragmentGoogleMaps).getView();
+//        mMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(38.6159712, -78.4503689))
+//                .title("Marker"));
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
 }
