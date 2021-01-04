@@ -10,7 +10,11 @@
         android:name="us.tripcamp.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
-
+    <fragment
+        android:id="@+id/nav_website"
+        android:name="us.tripcamp.WebsiteFragment"
+        android:label="@string/website"
+        tools:layout="@layout/fragment_website"/>
     <fragment
         android:id="@+id/nav_gallery"
         android:name="us.tripcamp.ui.gallery.GalleryFragment"

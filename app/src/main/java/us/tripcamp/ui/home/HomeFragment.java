@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
     private void fetchSpots(final GridLayout spotGridLayout) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
-        String url = "https://tripcamptest.herokuapp.com/api/spots";
+        String url = "https://tripcamp.herokuapp.com/api/spots";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
